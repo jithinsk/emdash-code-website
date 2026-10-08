@@ -1,0 +1,45 @@
+---
+title: Path patterns
+description: The exact rules for include and exclude path patterns.
+---
+
+## Syntax
+
+- A pattern must **start with `/`**.
+- It must **not contain whitespace**.
+- `*` is allowed **only as the last character**. There is no regex and no `**`.
+
+A pattern without `*` is an **exact** match. A pattern ending in `*` is a **prefix** match on whatever
+comes before the `*`.
+
+## Matching rules
+
+- A trailing `/` is ignored on both the pattern and the path, except for `/` itself.
+- Matching is **case-sensitive**.
+- Matching uses **decoded** paths, so non-ASCII patterns work as typed: `/blog/café/*` matches a
+  request for `/blog/caf%C3%A9/x`. A path with a malformed percent-escape is matched as-is.
+- `/blog/*` matches `/blog/x` and `/blog/a/b`, but not `/blog`. Add `/blog` as well to include it.
+- `/blog*` (no slash before the star) also matches `/blogroll`.
+- If **any** exclude pattern matches, the snippet is not output, even if an include pattern matches.
+- Nothing is ever output on `/_emdash/` admin paths.
+
+## Examples
+
+| Pattern       | Path                 | Match? |
+| ------------- | -------------------- | ------ |
+| `/about`      | `/about`             | ✅     |
+| `/about`      | `/about/`            | ✅     |
+| `/about`      | `/About`             | ❌     |
+| `/blog/*`     | `/blog/hello`        | ✅     |
+| `/blog/*`     | `/blog`              | ❌     |
+| `/blog*`      | `/blogroll`          | ✅     |
+| `/blog/café/*` | `/blog/caf%C3%A9/x` | ✅     |
+| `/*`          | `/`                  | ✅     |
+
+## Validation errors
+
+Saving an invalid pattern shows an error in the form and nothing is saved:
+
+- _Path must start with /_
+- _Path must not contain whitespace_
+- _\* is only allowed at the end of a path_

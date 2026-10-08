@@ -1,0 +1,16 @@
+{
+  "name": "emdash-code-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "0.42.5",
+    "astro": "7.3.8",
+    "sharp": "^0.34.0"
+  },
+  "engines": { "node": ">=22" }
+}

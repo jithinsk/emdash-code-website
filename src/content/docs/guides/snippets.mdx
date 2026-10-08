@@ -1,0 +1,78 @@
+---
+title: Managing snippets
+description: Create, edit, enable, duplicate and delete snippets in the EmDash admin.
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+import { Image } from "astro:assets";
+import list from "../../../assets/list.webp";
+import edit from "../../../assets/edit.webp";
+
+Snippets live in the admin at **Header & Footer Code**
+(`/_emdash/admin/plugins/header-footer-code/snippets`). Only Admins (`plugins:manage`) can change
+them. See [Permissions](/reference/permissions/).
+
+<Image src={list} alt="The snippet list with search, a placement filter, and each snippet's placement, priority, enabled state and last update" class="hero-shot" />
+
+## The snippet list
+
+The list shows each snippet's name, where it runs, placement, priority, whether it is enabled, and
+when it was last updated. You can search by name and filter by placement. The actions menu on each
+row lets you **edit**, **duplicate** or **delete** the snippet. Use the **On/Off** switch on a row to
+enable or disable it without opening the editor.
+
+## Adding a snippet
+
+<Steps>
+
+1. Choose **New snippet**.
+2. Paste your HTML into the **Code** editor. It takes raw `<script>`, `<style>`, `<noscript>`,
+   `<meta>` and similar tags, and outputs them exactly as written.
+3. Under **Settings**, give the snippet a **Name** and choose its **Placement** and **Priority**.
+4. Optionally, open **Targeting** to limit which pages the snippet runs on. If you leave everything
+   empty, it runs on every page.
+5. Save. The change reaches every server instance within about a second.
+
+</Steps>
+
+<Image src={edit} alt="The edit view: a code editor with line numbers, a sticky Settings card, and a Targeting tab for paths, page kind and locales" class="hero-shot" />
+
+If you try to leave the editor with unsaved changes, it asks you to confirm. Validation errors, such
+as a bad path pattern or a snippet that is too large, appear in the form, and nothing is saved.
+
+## Placements
+
+| Placement    | Admin label | Rendered by           |
+| ------------ | ----------- | --------------------- |
+| `head`       | Head        | `<EmDashHead />`      |
+| `body:start` | Body start  | `<EmDashBodyStart />` |
+| `body:end`   | Body end    | `<EmDashBodyEnd />`   |
+
+As a rule of thumb, `<meta>` tags, verification tags and most analytics loaders go in **Head**.
+`<noscript>` fallbacks such as Google Tag Manager's `<iframe>` go in **Body start**. Chat widgets and
+other heavy scripts usually go in **Body end**.
+
+## Ordering
+
+Within a placement, snippets are sorted by:
+
+1. `priority`, ascending (lower runs first; the default is `10`)
+2. creation time, oldest first
+3. id
+
+So if one snippet needs to run before another, for example a consent manager before an analytics tag,
+give it a lower priority.
+
+<Aside>
+	The order relative to page fragments from **other plugins** is not guaranteed.
+</Aside>
+
+## Enabling and disabling
+
+A disabled snippet is never output, but it is kept with all its settings. To stop **every** snippet at
+once, use the [kill switch](/guides/kill-switch/).
+
+## Duplicating
+
+**Duplicate** makes a copy of a snippet. It is a quick way to start a variant, such as the same tag
+with different targeting.

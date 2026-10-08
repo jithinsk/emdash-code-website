@@ -1,0 +1,105 @@
+---
+title: Extending with transforms
+description: Rewrite, drop or add to snippet output with synchronous transforms shipped in a wrapper package.
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+A **transform** is a function that runs on each matched snippet before it is output. Use transforms to
+rewrite snippet HTML, drop a snippet based on the page, or add extra page fragments.
+
+## The type
+
+```ts
+type Transform = (ctx: TransformContext) => TransformResult;
+
+interface TransformContext {
+  snippet: Readonly<Snippet>;
+  html: string; // the snippet code, or the previous transform's output
+  page: Readonly<PageInfo>; // EmDash's public page context
+}
+
+type TransformResult =
+  | string
+  | null
+  | { html: string | null; fragments?: PageFragmentContribution[] };
+```
+
+## Rules
+
+- Transforms are **synchronous** and run **in order**. Each one receives the previous one's `html`.
+- Return a **string** to replace the snippet HTML.
+- Return **`null`** to drop the snippet.
+- Return **`{ html, fragments }`** to replace the HTML (or drop it with `html: null`) and also add extra
+  page fragments. Extra fragments are de-duplicated by `key`, and the first one wins.
+- If a transform **throws**, the error is logged and that snippet is skipped. Other snippets are not
+  affected.
+- Fragments are kept once returned. If an earlier transform returns fragments and a later one drops the
+  snippet or throws, the snippet's own HTML is not output, but those fragments still are.
+
+## Shipping a transform
+
+Descriptor options are serialised to JSON, so you can't pass functions to `headerFooterCode()`
+directly. Instead, an extending package ships a wrapper entrypoint that calls `createPlugin` with its
+transforms.
+
+<Steps>
+
+1. Write the wrapper entrypoint.
+
+   ```ts title="your-package/plugin.ts"
+   import {
+     createPlugin as base,
+     type HeaderFooterCodeRuntimeOptions,
+     type Transform,
+   } from "emdash-header-footer-code/plugin";
+
+   /** Tag each <script> with the snippet's consent category so a consent manager can gate it. */
+   const tagConsentCategory: Transform = ({ snippet, html }) => {
+     const category = snippet.meta.consentCategory;
+     if (typeof category !== "string" || !/^[a-z-]+$/.test(category)) return html;
+     return html.replace(/<script\b/gi, `<script data-category="${category}"`);
+   };
+
+   export function createPlugin(options: HeaderFooterCodeRuntimeOptions = {}) {
+     return base({
+       ...options,
+       transforms: [...(options.transforms ?? []), tagConsentCategory],
+     });
+   }
+   ```
+
+2. Point the descriptor at it with a **package specifier**, not a relative path.
+
+   ```js title="astro.config.mjs"
+   plugins: [headerFooterCode({ entrypoint: "your-package/plugin" })];
+   ```
+
+   `entrypoint` is a descriptor field. It is not passed on as a plugin option.
+
+</Steps>
+
+With that in place, a snippet saved with `meta: { consentCategory: "analytics" }` and this code:
+
+```html
+<script src="https://example.com/a.js"></script>
+```
+
+is output as:
+
+```html
+<script data-category="analytics" src="https://example.com/a.js"></script>
+```
+
+<Aside>
+	`meta` is reserved for extensions like this. The plugin stores and returns it untouched, and keeps
+	unknown keys. See [Data model](/reference/data-model/).
+</Aside>
+
+## More ideas
+
+- **Drop on a condition:** return `null` when `page.kind === "content"` and the snippet's
+  `meta.skipOnContent` is set.
+- **Nonce or attribute injection:** add attributes to `<script>` tags, as in the example above.
+- **Extra fragments:** return `{ html, fragments: [...] }` to add a related `<link rel="preconnect">`
+  once, keyed so that duplicates collapse.

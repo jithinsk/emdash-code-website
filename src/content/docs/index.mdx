@@ -1,0 +1,72 @@
+---
+title: Header & Footer Code for EmDash
+description: Add analytics, verification tags, chat widgets and custom CSS/JS to the head or body of your EmDash pages, with no theme edits.
+template: splash
+hero:
+  tagline: Add analytics, verification tags, chat widgets and custom CSS/JS to the head or body of your EmDash pages. No theme edits, no redeploys to change a snippet.
+  actions:
+    - text: Get started
+      link: /installation/
+      icon: right-arrow
+    - text: View on GitHub
+      link: https://github.com/jithinsk/emdash-header-footer-code
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
+import { Image } from "astro:assets";
+import list from "../../assets/list.webp";
+
+<Image src={list} alt="Snippet list showing placement, priority, enabled toggle and where each snippet runs" class="hero-shot" />
+
+## Install in two steps
+
+```sh
+npm install emdash-header-footer-code
+```
+
+```js title="astro.config.mjs"
+import { headerFooterCode } from "emdash-header-footer-code";
+
+export default defineConfig({
+  integrations: [emdash({ /* … */ plugins: [headerFooterCode()] })],
+});
+```
+
+Redeploy, then open **Header & Footer Code** in the EmDash admin sidebar.
+
+## What you get
+
+<CardGrid>
+	<Card title="Three placements" icon="seti:html">
+		Output each snippet in the `<head>`, at the start of `<body>`, or at the end of `<body>`.
+		Ordering within a placement is set by a priority number.
+	</Card>
+	<Card title="Page targeting" icon="setting">
+		Include or exclude paths with simple prefix patterns, and limit snippets by page kind or locale.
+		Exclude always wins.
+	</Card>
+	<Card title="Kill switch" icon="warning">
+		One toggle stops all snippet output on every page. Nothing is deleted or changed.
+	</Card>
+	<Card title="Change log" icon="document">
+		Every create, edit, enable, disable, duplicate, delete and kill-switch change is recorded with the
+		user and the time.
+	</Card>
+	<Card title="Role aware" icon="approve-check">
+		Only Admins can write. Editors get a read-only list that never includes snippet code.
+	</Card>
+	<Card title="Extensible" icon="puzzle">
+		Plug in synchronous transforms, for example to tag scripts with a consent category.
+	</Card>
+</CardGrid>
+
+## Keep reading
+
+<CardGrid>
+	<LinkCard title="Theme setup" description="The three EmDash components your layout must render." href="/theme-setup/" />
+	<LinkCard title="Targeting pages" description="Include and exclude paths, page kinds and locales." href="/guides/targeting/" />
+	<LinkCard title="Recipes" description="Google Analytics, Search Console, chat widgets and more." href="/guides/recipes/" />
+	<LinkCard title="Security" description="Read this before you give anyone Admin." href="/security/" />
+</CardGrid>

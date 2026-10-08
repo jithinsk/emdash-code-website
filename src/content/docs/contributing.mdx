@@ -1,0 +1,30 @@
+---
+title: Contributing
+description: Run the tests and work on the plugin locally.
+---
+
+The source is on [GitHub](https://github.com/jithinsk/emdash-header-footer-code). Issues and pull
+requests are welcome.
+
+## Development
+
+```sh
+pnpm install
+pnpm test        # unit tests
+pnpm typecheck
+pnpm exec playwright install chromium   # once
+pnpm e2e         # builds, then runs Playwright against an EmDash 1.0.1 starter in e2e/fixture
+pnpm smoke       # packs the tarball, installs it into a copy of the fixture, astro build + production server
+```
+
+The code is type-checked with TypeScript in strict mode (`pnpm typecheck`, run in CI). It is not yet
+linted.
+
+## Adding a field to the edit form
+
+The edit form is driven by a field list in `src/core/fields.ts`. To add a field, for example
+`meta.consentCategory`, add an entry there and the form picks it up.
+
+## Licence
+
+MIT

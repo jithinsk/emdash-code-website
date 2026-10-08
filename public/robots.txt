@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://emdash-code.jithins.dev/sitemap-index.xml

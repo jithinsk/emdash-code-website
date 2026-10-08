@@ -1,0 +1,41 @@
+---
+title: Introduction
+description: What the Header & Footer Code plugin does and how it fits into EmDash.
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+**Header & Footer Code** (`emdash-header-footer-code`) is a native EmDash plugin. It lets site
+admins add code snippets to public pages from the admin UI. Typical snippets are analytics tags,
+search engine verification tags, chat widgets and small bits of CSS or JavaScript. You don't need to
+edit your theme or redeploy to add or change one.
+
+## How it works
+
+1. You add snippets in the admin at **Header & Footer Code**
+   (`/_emdash/admin/plugins/header-footer-code/snippets`).
+2. On every public page request, EmDash calls the plugin's `page:fragments` hook.
+3. The plugin picks the enabled snippets that match the page's path, page kind and locale, and sorts
+   them by priority.
+4. EmDash renders each snippet where your layout puts `<EmDashHead />`, `<EmDashBodyStart />` or
+   `<EmDashBodyEnd />`.
+
+Nothing is ever output on `/_emdash/` admin paths.
+
+## Capability
+
+The plugin declares one capability, `hooks.page-fragments:register`. It is the only way to add
+scripts or HTML to public pages, and EmDash won't register the hook without it. The plugin requests
+no other capability.
+
+<Aside type="caution" title="Native plugin">
+	This plugin runs as first-party code with no permission sandbox. Snippet code is output exactly as
+	written. Read the [security notes](/security/) before you begin.
+</Aside>
+
+## Requirements
+
+- `emdash` **^1.0.1**
+- React 18 or 19 and `@cloudflare/kumo` ^2.6.0 (peer dependencies used by the admin page; an EmDash
+  site already has them)
+- A layout that renders the three EmDash page components (see [Theme setup](/theme-setup/))

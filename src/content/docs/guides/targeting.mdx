@@ -1,0 +1,70 @@
+---
+title: Targeting pages
+description: Limit a snippet to certain paths, page kinds and locales.
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+By default a snippet runs on every public page. You can narrow that down in the **Targeting** tab of
+the editor in three ways, and a page must pass all three for the snippet to run:
+
+1. **Paths:** the page path must match an include pattern (if there are any) and no exclude pattern.
+2. **Page kind:** all pages, content pages only, or custom pages only.
+3. **Locales:** the page's locale must be in the list (if there is one).
+
+## Include and exclude paths
+
+Type a pattern and press <kbd>Enter</kbd> to add it.
+
+- **Include paths** empty means every page.
+- **Exclude paths** empty means no page is excluded.
+- **Exclude wins.** If any exclude pattern matches, the snippet is not output, even when an include
+  pattern also matches.
+
+A pattern is either an exact path (`/pricing`) or a prefix ending in `*` (`/blog/*`).
+
+| Pattern    | Matches                       | Does not match      |
+| ---------- | ----------------------------- | ------------------- |
+| `/`        | `/`                           | `/about`            |
+| `/pricing` | `/pricing`, `/pricing/`       | `/pricing/teams`    |
+| `/blog/*`  | `/blog/x`, `/blog/a/b`        | `/blog`             |
+| `/*`       | every page, including `/`     | —                   |
+
+<Aside type="tip">
+	`/blog/*` doesn't match `/blog` itself. To include the index page too, add both `/blog` and
+	`/blog/*`.
+</Aside>
+
+The full rules are in the [path patterns reference](/reference/path-patterns/).
+
+### Example: everywhere except checkout
+
+| Field         | Value                     |
+| ------------- | ------------------------- |
+| Include paths | _(empty)_                 |
+| Exclude paths | `/checkout`, `/checkout/*` |
+
+## Page kind
+
+| Value     | Admin label   | Runs on                                                         |
+| --------- | ------------- | --------------------------------------------------------------- |
+| `all`     | All pages     | Every public page                                               |
+| `content` | Content pages | Pages whose layout passes `kind: "content"` (EmDash entries)    |
+| `custom`  | Custom pages  | Pages whose layout passes `kind: "custom"`                      |
+
+The page kind comes from the `kind` your layout passes to `createPublicPageContext`. See
+[Theme setup](/theme-setup/#page-kind).
+
+## Locales
+
+Add locale codes, such as `en` or `fr`, to run a snippet only on pages in those locales. Leave the list
+empty to run on all locales.
+
+<Aside type="caution">
+	A page with no locale never matches a non-empty locale list. If your site isn't localised, leave
+	Locales empty.
+</Aside>
+
+## Admin paths
+
+Nothing is ever output on `/_emdash/` admin paths, whatever the targeting says.

@@ -1,0 +1,66 @@
+---
+title: Installation
+description: Install the plugin from npm and register it in your Astro config.
+---
+
+import { Steps, Tabs, TabItem, Aside } from "@astrojs/starlight/components";
+
+<Steps>
+
+1. Install the package.
+
+   <Tabs syncKey="pkg">
+   	<TabItem label="npm">
+   	```sh
+   	npm install emdash-header-footer-code
+   	```
+   	</TabItem>
+   	<TabItem label="pnpm">
+   	```sh
+   	pnpm add emdash-header-footer-code
+   	```
+   	</TabItem>
+   	<TabItem label="yarn">
+   	```sh
+   	yarn add emdash-header-footer-code
+   	```
+   	</TabItem>
+   </Tabs>
+
+2. Register the plugin with EmDash.
+
+   ```js title="astro.config.mjs" ins={2,6}
+   import { defineConfig } from "astro/config";
+   import { headerFooterCode } from "emdash-header-footer-code";
+
+   export default defineConfig({
+     integrations: [
+       emdash({ /* … */ plugins: [headerFooterCode()] }),
+     ],
+   });
+   ```
+
+3. Check that your layout renders `<EmDashHead />`, `<EmDashBodyStart />` and `<EmDashBodyEnd />`.
+   The EmDash starter already does. See [Theme setup](/theme-setup/).
+
+4. Redeploy your site.
+
+5. Open **Header & Footer Code** in the admin sidebar, or go to
+   `/_emdash/admin/plugins/header-footer-code/snippets`, and add your first snippet.
+
+</Steps>
+
+<Aside>
+	Native plugins can't be installed from the EmDash plugin registry. You add them to your Astro config
+	and redeploy.
+</Aside>
+
+## Updating
+
+Update the package and redeploy:
+
+```sh
+npm install emdash-header-footer-code@latest
+```
+
+Within a major version an update never adds a capability. See [Versioning](/versioning/).

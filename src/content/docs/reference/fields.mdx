@@ -1,0 +1,32 @@
+---
+title: Snippet fields
+description: Every field on a snippet, with defaults and validation rules.
+---
+
+## Editable fields
+
+| Field          | Type                                    | Default  | Notes                                                                                     |
+| -------------- | --------------------------------------- | -------- | ----------------------------------------------------------------------------------------- |
+| `name`         | string                                  | required | Shown in the admin list only. Up to 200 characters.                                       |
+| `code`         | string                                  | required | Raw HTML (`<script>`, `<style>`, `<noscript>`, `<meta>`, …), output exactly as written. Up to 64 KB. |
+| `placement`    | `"head"` \| `"body:start"` \| `"body:end"` | `"head"` |                                                                                         |
+| `enabled`      | boolean                                 | `true`   | Disabled snippets are never output.                                                       |
+| `priority`     | integer                                 | `10`     | Lower runs first within the same placement.                                               |
+| `includePaths` | string[]                                | `[]`     | Empty means every page. See [Path patterns](/reference/path-patterns/).                  |
+| `excludePaths` | string[]                                | `[]`     | Empty means none. Exclude wins over include.                                              |
+| `pageKind`     | `"all"` \| `"content"` \| `"custom"`    | `"all"`  |                                                                                           |
+| `locales`      | string[]                                | `[]`     | Empty means all locales. A page with no locale never matches a non-empty list.            |
+| `meta`         | object                                  | `{}`     | Reserved for extensions. Stored and returned untouched.                                   |
+
+## System fields
+
+These are set by the plugin and are read-only.
+
+| Field           | Type                          | Notes                                  |
+| --------------- | ----------------------------- | -------------------------------------- |
+| `id`            | string                        | Unique id.                             |
+| `schemaVersion` | number                        | `1` in v0.1.                           |
+| `createdAt`     | string                        | ISO timestamp.                         |
+| `updatedAt`     | string                        | ISO timestamp.                         |
+| `createdBy`     | `{ id, name, email }`         | The user who created the snippet.      |
+| `updatedBy`     | `{ id, name, email }`         | The user who last changed the snippet. |

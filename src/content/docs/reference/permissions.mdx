@@ -1,0 +1,12 @@
+---
+title: Permissions
+description: What Admins and Editors can do with snippets.
+---
+
+| Role   | Permission       | Can do                                                                                                       |
+| ------ | ---------------- | ------------------------------------------------------------------------------------------------------------ |
+| Admin  | `plugins:manage` | Everything: create, edit, enable, duplicate, delete, kill switch, view code.                                  |
+| Editor | `plugins:read`   | Open the page and see the snippet list, read-only. The list doesn't include code, and the create, edit and kill-switch controls are hidden. |
+
+Write requests from an Editor are rejected with **HTTP 403**. Snippet code is left out of the list API
+response for Editors, not just hidden in the UI. The end-to-end tests cover both.

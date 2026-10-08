@@ -1,0 +1,24 @@
+/* Brand accent: EmDash-adjacent orange. */
+:root {
+	--sl-color-accent-low: #3b1a08;
+	--sl-color-accent: #f76707;
+	--sl-color-accent-high: #ffd8a8;
+}
+:root[data-theme="light"] {
+	--sl-color-accent-low: #ffe8cc;
+	--sl-color-accent: #c2410c;
+	--sl-color-accent-high: #7c2d12;
+}
+
+.hero-shot {
+	border-radius: 0.75rem;
+	border: 1px solid var(--sl-color-gray-5);
+	box-shadow: 0 20px 50px -20px rgb(0 0 0 / 0.45);
+	width: 100%;
+	height: auto;
+}
+.placement-diagram {
+	font-family: var(--sl-font-mono);
+	font-size: var(--sl-text-sm);
+	line-height: 1.6;
+}

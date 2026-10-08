@@ -1,0 +1,89 @@
+---
+title: Recipes
+description: Ready-to-use snippet settings for common analytics, verification and widget tags.
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+Each recipe lists the placement and any targeting. Replace the placeholder IDs with your own.
+
+<Aside type="caution">
+	Only paste code from providers you trust. Snippets run as first-party code on every page they match.
+</Aside>
+
+## Google Analytics 4
+
+**Placement:** Head · **Priority:** 10
+
+```html
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+```
+
+## Google Tag Manager
+
+GTM needs two snippets.
+
+**1. Loader.** Placement: Head · Priority: 5
+
+```html
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+```
+
+**2. No-script fallback.** Placement: Body start
+
+```html
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+```
+
+## Search engine verification
+
+**Placement:** Head · **Include paths:** `/`
+
+Verification only needs the home page, so include just `/`.
+
+```html
+<meta name="google-site-verification" content="your-token" />
+<meta name="msvalidate.01" content="your-token" />
+```
+
+## Plausible / privacy-friendly analytics
+
+**Placement:** Head
+
+```html
+<script defer data-domain="example.com" src="https://plausible.io/js/script.js"></script>
+```
+
+## Chat widget on support pages only
+
+**Placement:** Body end · **Include paths:** `/support`, `/support/*`, `/pricing`
+
+```html
+<script src="https://widget.example-chat.com/loader.js" data-id="XXXX" async></script>
+```
+
+## Site-wide CSS tweak
+
+**Placement:** Head · **Priority:** 100 (so it comes after other head snippets)
+
+```html
+<style>
+  .announcement-bar { display: none; }
+</style>
+```
+
+## Blog-only, English-only script
+
+**Placement:** Body end · **Include paths:** `/blog`, `/blog/*` · **Page kind:** Content pages ·
+**Locales:** `en`

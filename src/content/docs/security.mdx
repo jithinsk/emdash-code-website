@@ -1,0 +1,41 @@
+---
+title: Security
+description: The trust model for a plugin that outputs raw HTML on every page.
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+<Aside type="danger" title="Read this first">
+	This plugin runs as first-party code with no permission sandbox. Snippet code is intentionally
+	**unsanitised** HTML and is output exactly as written. Never paste code you don't trust.
+</Aside>
+
+## What that means
+
+- Anyone who can save a snippet can run JavaScript on every public page of your site, in your
+  visitors' browsers, on your origin.
+- Only users with the `plugins:manage` permission (**Admins**) can create, edit, enable or delete
+  snippets. Treat that permission accordingly.
+- Editors (`plugins:read`) can see the snippet list, but the API never sends them snippet code.
+- Nothing is ever output on `/_emdash/` admin paths, so a broken snippet can't lock you out of the
+  admin.
+
+## Good practice
+
+- Keep the number of Admins small.
+- Prefer providers' official snippets, loaded from their own domains.
+- Use the [change log](/guides/kill-switch/#change-log) to review who changed what.
+- If something goes wrong, use the [kill switch](/guides/kill-switch/) first and investigate after.
+  Remember to purge any edge HTML cache.
+- If you use a Content Security Policy, allow the domains your snippets load from.
+
+## Capabilities
+
+The plugin requests only `hooks.page-fragments:register`. Native plugins have no consent prompt on
+upgrade, so adding a capability is always a **major** version. See [Versioning](/versioning/).
+
+## Reporting a vulnerability
+
+Please don't post vulnerability details in a public issue. Open an
+[issue](https://github.com/jithinsk/emdash-header-footer-code/issues) asking for a private contact,
+and the maintainer will follow up.

@@ -1,0 +1,56 @@
+---
+title: Theme setup
+description: The three EmDash page components your layout must render for snippets to appear.
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+The plugin hands its snippets to EmDash, and EmDash renders them through three components in your
+layout. Each placement needs its component:
+
+| Placement    | Component             | Where it goes                  |
+| ------------ | --------------------- | ------------------------------ |
+| `head`       | `<EmDashHead />`      | Inside `<head>`                |
+| `body:start` | `<EmDashBodyStart />` | First thing inside `<body>`    |
+| `body:end`   | `<EmDashBodyEnd />`   | Last thing before `</body>`    |
+
+<Aside type="caution">
+	If a component is missing, snippets for that placement render nothing, and you get no error.
+</Aside>
+
+## Example layout
+
+```astro title="src/layouts/Base.astro"
+---
+import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
+import { createPublicPageContext } from "emdash/page";
+
+const pageCtx = createPublicPageContext({
+  Astro,
+  kind: "custom", // "content" on content pages
+  pageType: "website",
+  title: "My site",
+});
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My site</title>
+    <EmDashHead page={pageCtx} />
+  </head>
+  <body>
+    <EmDashBodyStart page={pageCtx} />
+    <slot />
+    <EmDashBodyEnd page={pageCtx} />
+  </body>
+</html>
+```
+
+The EmDash starter's `src/layouts/Base.astro` is the reference for building `pageCtx`.
+
+## Page kind
+
+The `kind` you pass to `createPublicPageContext` matters. Snippets can be limited to `content` pages
+(pages that render EmDash content entries) or `custom` pages (everything else). If you pass the wrong
+kind, a snippet targeted at the other kind won't appear. See [Targeting pages](/guides/targeting/).

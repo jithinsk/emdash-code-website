@@ -1,0 +1,57 @@
+---
+title: API & types
+description: Package entrypoints, functions and exported TypeScript types.
+---
+
+## Entrypoints
+
+| Specifier                           | What it is                                                |
+| ----------------------------------- | --------------------------------------------------------- |
+| `emdash-header-footer-code`         | `headerFooterCode()` descriptor factory and types.        |
+| `emdash-header-footer-code/plugin`  | `createPlugin()` runtime and types, for wrapper packages.  |
+| `emdash-header-footer-code/admin`   | The React admin page, loaded by EmDash.                   |
+
+## `headerFooterCode(options?)`
+
+Returns the EmDash plugin descriptor. Use it in `astro.config.mjs`.
+
+```ts
+interface HeaderFooterCodeOptions {
+  /** Module that exports `createPlugin`. Defaults to "emdash-header-footer-code/plugin". */
+  entrypoint?: string;
+}
+```
+
+The descriptor registers the plugin with id `header-footer-code`, format `native`, and one admin page,
+`/snippets`, labelled **Header & Footer Code**.
+
+## `createPlugin(options?)`
+
+Exported from `emdash-header-footer-code/plugin`. Builds the runtime plugin. Call it from a wrapper
+entrypoint to add [transforms](/guides/transforms/).
+
+```ts
+interface HeaderFooterCodeRuntimeOptions {
+  /** Appended after the built-in transforms (none in v0.1). */
+  transforms?: Transform[];
+}
+```
+
+## Types
+
+| Type                             | Root | `/plugin` |
+| -------------------------------- | :--: | :-------: |
+| `Transform`                      |  ✅  |    ✅     |
+| `TransformContext`               |  ✅  |    ✅     |
+| `TransformResult`                |  ✅  |    ✅     |
+| `Snippet`                        |  ✅  |    ✅     |
+| `HeaderFooterCodeRuntimeOptions` |      |    ✅     |
+
+## Capability
+
+`hooks.page-fragments:register`, and nothing else.
+
+## Storage
+
+The plugin uses two EmDash storage collections, `snippets` (indexed on `createdAt`) and `changelog`
+(indexed on `at`), plus one KV `state` record that holds the revision number and the kill switch.

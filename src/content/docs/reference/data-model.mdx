@@ -1,0 +1,40 @@
+---
+title: Data model
+description: How snippets are stored, versioned and extended.
+---
+
+## `meta`
+
+`meta` is reserved for extensions, for example `meta.consentCategory` used by a
+[transform](/guides/transforms/). The plugin stores and returns it untouched and keeps unknown keys.
+
+## `schemaVersion`
+
+Every snippet has a `schemaVersion`, currently `1`. If a record has a newer `schemaVersion` than the
+installed code understands, for example after a downgrade, it is passed through unchanged and never
+rewritten.
+
+## State and revisions
+
+A single KV record holds `{ rev, disabled }`:
+
+- `rev` is bumped on every write. Server instances reload their compiled snippet list when it changes.
+- `disabled` is the [kill switch](/guides/kill-switch/).
+
+The revision is bumped **before** the change-log write, so if the log write fails, output is not left
+stale.
+
+## Change log entries
+
+```ts
+interface ChangeLogEntry {
+  id: string;
+  at: string; // ISO
+  user: { id: string; name: string | null; email: string | null };
+  action:
+    | "create" | "update" | "enable" | "disable"
+    | "duplicate" | "delete" | "killswitch_on" | "killswitch_off";
+  snippetId: string | null;
+  snippetName: string | null;
+}
+```

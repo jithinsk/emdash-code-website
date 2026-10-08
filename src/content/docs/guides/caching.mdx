@@ -1,0 +1,35 @@
+---
+title: Caching & freshness
+description: How quickly snippet changes reach your visitors.
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+## Server instances
+
+Each server instance (for example each Worker isolate) caches snippets in memory and checks a revision
+number in plugin storage at most once a second. Every write, including the kill switch, bumps that
+revision. **Changes reach every instance within about 1 second.**
+
+## Edge HTML caches
+
+If your pages are served from an edge HTML cache, such as Cloudflare Workers Cache, visitors keep
+getting the cached HTML, with the old snippets, until you purge it. v0.1 doesn't purge automatically.
+
+Purge after you change snippets. For example, on Cloudflare Workers:
+
+```ts
+import { cache } from "cloudflare:workers";
+
+await cache.purge({ purgeEverything: true });
+```
+
+<Aside type="tip">
+	This applies to the kill switch too. If you turn off output in an emergency, purge your HTML cache
+	as well.
+</Aside>
+
+## Ordering with other plugins
+
+Other plugins can add page fragments too. The order between their fragments and this plugin's snippets
+is not guaranteed. Within this plugin, order is always set by [priority](/guides/snippets/#ordering).
