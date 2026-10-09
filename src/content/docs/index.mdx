@@ -1,7 +1,14 @@
 ---
 title: Header & Footer Code for EmDash
-description: Add analytics, verification tags, chat widgets and custom CSS/JS to the head or body of your EmDash pages, with no theme edits.
+description: "EmDash plugin to add Google Analytics, Tag Manager, verification tags, chat widgets and custom CSS/JS to your pages' head or body, with no theme edits."
 template: splash
+head:
+  - tag: title
+    content: "EmDash Header & Footer Code: add scripts without theme edits"
+  - tag: meta
+    attrs: { property: og:type, content: website }
+  - tag: meta
+    attrs: { property: og:title, content: "EmDash Header & Footer Code: add scripts without theme edits" }
 hero:
   tagline: Add analytics, verification tags, chat widgets and custom CSS/JS to the head or body of your EmDash pages. No theme edits, no redeploys to change a snippet.
   actions:
@@ -18,7 +25,7 @@ import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
 import { Image } from "astro:assets";
 import list from "../../assets/list.webp";
 
-<Image src={list} alt="Snippet list showing placement, priority, enabled toggle and where each snippet runs" class="hero-shot" />
+<Image src={list} alt="Snippet list showing placement, priority, enabled toggle and where each snippet runs" class="hero-shot" loading="eager" fetchpriority="high" widths={[480, 960, 1600]} sizes="(min-width: 72rem) 68rem, 100vw" />
 
 ## Install in two steps
 

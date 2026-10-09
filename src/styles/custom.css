@@ -22,3 +22,14 @@
 	font-size: var(--sl-text-sm);
 	line-height: 1.6;
 }
+
+/* The longer site title would truncate in the narrow mobile header. */
+@media (max-width: 50rem) {
+	.site-title {
+		font-size: var(--sl-text-sm);
+		line-height: 1.15;
+	}
+	.site-title span {
+		white-space: normal;
+	}
+}

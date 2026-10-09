@@ -1,12 +1,46 @@
 ---
 title: Permissions
-description: What Admins and Editors can do with snippets.
+description: "What EmDash Admins (plugins:manage) and Editors (plugins:read) can see and do with header and footer code snippets, and how writes are enforced."
 ---
 
-| Role   | Permission       | Can do                                                                                                       |
-| ------ | ---------------- | ------------------------------------------------------------------------------------------------------------ |
-| Admin  | `plugins:manage` | Everything: create, edit, enable, duplicate, delete, kill switch, view code.                                  |
-| Editor | `plugins:read`   | Open the page and see the snippet list, read-only. The list doesn't include code, and the create, edit and kill-switch controls are hidden. |
+import { Aside } from "@astrojs/starlight/components";
 
-Write requests from an Editor are rejected with **HTTP 403**. Snippet code is left out of the list API
-response for Editors, not just hidden in the UI. The end-to-end tests cover both.
+Access follows EmDash's plugin permissions. In a default EmDash install, **Admins** have
+`plugins:manage` and **Editors** have `plugins:read`.
+
+## What each role can do
+
+| Action                                   | Admin (`plugins:manage`) | Editor (`plugins:read`) |
+| ---------------------------------------- | :----------------------: | :---------------------: |
+| Open **Header & Footer Code** in admin   |            ✅            |           ✅            |
+| See the snippet list (name, placement, priority, on/off, targeting) | ✅ |      ✅            |
+| See snippet **code**                     |            ✅            |           ❌            |
+| Create, edit, duplicate, delete          |            ✅            |           ❌            |
+| Turn a snippet on or off                 |            ✅            |           ❌            |
+| Use the kill switch                      |            ✅            |           ❌            |
+| View the change log                      |            ✅            |           ❌            |
+
+For Editors, the create, edit, toggle, duplicate, delete and kill-switch controls are hidden, and the
+change log tab isn't shown.
+
+## How it's enforced
+
+The UI isn't the only check. Each plugin API route declares the permission it needs, and EmDash
+enforces it on the server:
+
+| Route                                                              | Permission        |
+| ------------------------------------------------------------------ | ----------------- |
+| `snippets/list`                                                    | `plugins:read`    |
+| `snippets/get`, `snippets/save`, `snippets/toggle`, `snippets/duplicate`, `snippets/delete` | `plugins:manage` |
+| `killswitch/set`, `changelog/list`                                 | `plugins:manage`  |
+
+- A write request from an Editor is rejected with **HTTP 403**.
+- For callers without `plugins:manage`, `snippets/list` **leaves code out of the response**. It isn't
+  just hidden in the browser.
+
+The end-to-end tests cover both.
+
+<Aside type="caution">
+	Anyone with `plugins:manage` can run JavaScript on every public page. Grant it sparingly. See
+	[Security](/security/).
+</Aside>

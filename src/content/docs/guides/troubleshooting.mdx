@@ -1,0 +1,70 @@
+---
+title: Troubleshooting
+description: "Fix EmDash snippets that don't show up, show on the wrong pages, run in the wrong order, or won't save, with a checklist for each symptom."
+---
+
+import { Steps } from "@astrojs/starlight/components";
+
+## Why isn't my snippet showing on the page?
+
+Work through these in order. The first five cover almost every case.
+
+<Steps>
+
+1. **Is output turned on?** The **Output enabled** toggle at the top of the admin page is the
+   [kill switch](/guides/kill-switch/). When it's off, a banner says so.
+2. **Is the snippet enabled?** Its row in the list should say **On**.
+3. **Does the layout render the right component?** `head` snippets need `<EmDashHead />`,
+   `body:start` needs `<EmDashBodyStart />`, and `body:end` needs `<EmDashBodyEnd />`. A missing
+   component fails silently. See [Theme setup](/theme-setup/).
+4. **Does the targeting match this page?** Check the [path patterns](/reference/path-patterns/):
+   `/blog/*` doesn't match `/blog`, matching is case-sensitive, and any matching exclude pattern wins.
+   If you set a page kind, check the `kind` your layout passes to `createPublicPageContext`. If you
+   set locales, a page with no locale never matches.
+5. **Is an HTML cache serving an old copy?** Changes reach the server within about a second, but an
+   edge HTML cache keeps the old page until it is purged. See [Caching](/guides/caching/).
+6. **Are you looking at an admin page?** Nothing is output on `/_emdash/` paths, by design.
+7. **Is a transform dropping it?** If you use an extension package, a transform may return `null` or
+   throw. Errors are logged by the plugin. See [Transforms](/guides/transforms/).
+
+</Steps>
+
+To check what the server sends, view the page source (not the DOM inspector, which also shows what
+scripts added later) and search for a distinctive string from your snippet.
+
+## The snippet shows on pages it shouldn't
+
+- An empty **Include paths** list means **every** page. Add at least one include pattern to narrow it.
+- `/blog*` (no slash) also matches `/blogroll`. Use `/blog` plus `/blog/*`.
+- Page kind defaults to **All pages**.
+
+## Two snippets run in the wrong order
+
+Within a placement, lower `priority` runs first. Equal priorities fall back to creation time, so a
+newer snippet runs after an older one. Give the one that must run first a lower number, for example
+`5` for a consent manager and `10` for analytics. The order relative to **other plugins'** fragments
+isn't guaranteed.
+
+## I can't save a snippet
+
+The form shows the reason next to the field:
+
+| Message                                                      | Cause and fix                                                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------------ |
+| _Path must start with /_                                     | Write `/pricing`, not `pricing` or a full URL.                     |
+| _\* is only allowed at the end of a path_                    | Use a prefix such as `/docs/*`; there are no mid-path wildcards.    |
+| _Code is … KB; the limit is 64 KB per snippet_               | Load large scripts from a URL with `<script src>` instead of inline. |
+| _Total code would be … KB; the limit is 512 KB…_             | Delete or slim down unused snippets.                               |
+| _You can have at most 100 snippets_                          | Combine related tags into one snippet, or delete old ones.         |
+
+See [Limits](/reference/limits/).
+
+## I can see the list but can't edit anything
+
+You have Editor access (`plugins:read`). Editing needs `plugins:manage`, which Admins have. See
+[Permissions](/reference/permissions/).
+
+## The site broke after adding a snippet
+
+Turn off **Output enabled** to stop all snippets at once, purge your HTML cache, then turn snippets
+back on one at a time. The [change log](/guides/kill-switch/#change-log) shows what changed and when.

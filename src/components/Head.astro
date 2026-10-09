@@ -1,0 +1,59 @@
+---
+// Starlight's default <head>, plus JSON-LD structured data for every page.
+import Default from "@astrojs/starlight/components/Head.astro";
+
+const { entry, id, lastUpdated } = Astro.locals.starlightRoute;
+const site = Astro.site!.href.replace(/\/$/, "");
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const author = { "@type": "Person", name: "Jithin Sebastian", url: "https://github.com/jithinsk" };
+const website = { "@type": "WebSite", "@id": `${site}/#website`, name: "EmDash Header & Footer Code", url: `${site}/` };
+
+const SECTIONS: Record<string, string> = { guides: "Guides", reference: "Reference" };
+const [section] = id.split("/");
+const crumbs = [
+	{ name: "Home", item: `${site}/` },
+	...(id.includes("/") && SECTIONS[section] ? [{ name: SECTIONS[section] }] : []),
+	{ name: entry.data.title, item: url },
+];
+
+const graph =
+	id === "" || id === "index"
+		? [
+				website,
+				{
+					"@type": "SoftwareSourceCode",
+					name: "EmDash Header & Footer Code",
+					alternateName: "emdash-header-footer-code",
+					description: entry.data.description,
+					url: `${site}/`,
+					codeRepository: "https://github.com/jithinsk/emdash-header-footer-code",
+					programmingLanguage: "TypeScript",
+					runtimePlatform: "EmDash",
+					license: "https://opensource.org/licenses/MIT",
+					version: "0.1.1",
+					author,
+				},
+			]
+		: [
+				website,
+				{
+					"@type": "TechArticle",
+					headline: entry.data.title,
+					description: entry.data.description,
+					url,
+					...(lastUpdated ? { dateModified: lastUpdated.toISOString() } : {}),
+					author,
+					isPartOf: { "@id": `${site}/#website` },
+					about: { "@type": "SoftwareSourceCode", name: "EmDash Header & Footer Code" },
+				},
+				{
+					"@type": "BreadcrumbList",
+					itemListElement: crumbs.map((c, i) => ({ "@type": "ListItem", position: i + 1, ...c })),
+				},
+			];
+const isNotFound = id === "404";
+const jsonLd = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c");
+---
+
+<Default />
+{!isNotFound && <script type="application/ld+json" set:html={jsonLd} />}

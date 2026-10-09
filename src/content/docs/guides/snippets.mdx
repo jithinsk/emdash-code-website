@@ -1,6 +1,6 @@
 ---
 title: Managing snippets
-description: Create, edit, enable, duplicate and delete snippets in the EmDash admin.
+description: "Create, edit, enable, duplicate and delete EmDash code snippets, choose head or body placement, and control output order with priority."
 ---
 
 import { Aside, Steps } from "@astrojs/starlight/components";
@@ -12,7 +12,7 @@ Snippets live in the admin at **Header & Footer Code**
 (`/_emdash/admin/plugins/header-footer-code/snippets`). Only Admins (`plugins:manage`) can change
 them. See [Permissions](/reference/permissions/).
 
-<Image src={list} alt="The snippet list with search, a placement filter, and each snippet's placement, priority, enabled state and last update" class="hero-shot" />
+<Image src={list} alt="The snippet list with search, a placement filter, and each snippet's placement, priority, enabled state and last update" class="hero-shot" widths={[480, 960, 1600]} sizes="(min-width: 50rem) 45rem, 100vw" />
 
 ## The snippet list
 
@@ -35,7 +35,7 @@ enable or disable it without opening the editor.
 
 </Steps>
 
-<Image src={edit} alt="The edit view: a code editor with line numbers, a sticky Settings card, and a Targeting tab for paths, page kind and locales" class="hero-shot" />
+<Image src={edit} alt="The edit view: a code editor with line numbers, a sticky Settings card, and a Targeting tab for paths, page kind and locales" class="hero-shot" widths={[480, 960, 1600]} sizes="(min-width: 50rem) 45rem, 100vw" />
 
 If you try to leave the editor with unsaved changes, it asks you to confirm. Validation errors, such
 as a bad path pattern or a snippet that is too large, appear in the form, and nothing is saved.

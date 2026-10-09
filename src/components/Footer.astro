@@ -1,0 +1,22 @@
+---
+// Starlight's default footer, plus a maintainer line.
+import Default from "@astrojs/starlight/components/Footer.astro";
+---
+
+<Default />
+<p class="maintainer">
+	Maintained by <a href="https://github.com/jithinsk" rel="author">Jithin Sebastian</a> ·
+	<a href="https://github.com/jithinsk/emdash-header-footer-code">Source on GitHub</a> · MIT licence
+</p>
+
+<style>
+	.maintainer {
+		margin-top: 1.5rem;
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+		text-align: center;
+	}
+	.maintainer a {
+		color: inherit;
+	}
+</style>

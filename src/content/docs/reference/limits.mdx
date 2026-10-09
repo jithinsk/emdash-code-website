@@ -1,15 +1,38 @@
 ---
 title: Limits
-description: Size and count limits for snippets.
+description: "Size and count limits for EmDash header and footer snippets: 64 KB per snippet, 512 KB total, 100 snippets, and what happens when you hit them."
 ---
 
-| Limit                    | Value                      |
-| ------------------------ | -------------------------- |
-| Code per snippet         | 64 KB (UTF-8 bytes)        |
-| Total code, all snippets | 512 KB (UTF-8 bytes)       |
-| Number of snippets       | 100                        |
-| Name length              | 200 characters             |
-| Change log shown         | Latest 100 entries         |
+| Limit                    | Value                | Error shown when exceeded                                              |
+| ------------------------ | -------------------- | ---------------------------------------------------------------------- |
+| Code per snippet         | 64 KB (UTF-8 bytes)  | _Code is 70.2 KB; the limit is 64 KB per snippet_                      |
+| Total code, all snippets | 512 KB (UTF-8 bytes) | _Total code would be 530.0 KB; the limit is 512 KB across all snippets_ |
+| Number of snippets       | 100                  | _You can have at most 100 snippets_                                    |
+| Name length              | 200 characters       | _Name must be at most 200 characters_                                  |
+| Change log shown         | Latest 100 entries   | Older entries are kept, just not shown (v0.1 doesn't prune).           |
 
-Saving past a limit, or with an invalid path pattern, shows a validation error in the form and
-nothing is saved.
+## How the limits are counted
+
+- Sizes are **UTF-8 bytes**, not characters. Emoji and non-Latin text count as 2–4 bytes per
+  character.
+- The **total** includes every snippet, **enabled or not**. Disabling a snippet doesn't free space;
+  deleting it does.
+- When you **edit** a snippet, its old code isn't counted twice. The total is the other snippets plus
+  the new code.
+- **Duplicating** a snippet adds a new one, so it counts toward both the 100-snippet limit and the
+  total size.
+
+## When you hit a limit
+
+The save is rejected, the error appears in the form next to the field, and **nothing is saved**.
+Existing snippets and the live site aren't affected.
+
+## Staying well under
+
+The limits exist because every snippet is output inline in your HTML. Large inline scripts slow every
+page. Prefer loading third-party code by URL:
+
+```html
+<!-- Good: a few hundred bytes -->
+<script async src="https://example.com/widget.js"></script>
+```

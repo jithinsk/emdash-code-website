@@ -1,0 +1,53 @@
+---
+title: Changelog
+description: "Release history of the emdash-header-footer-code EmDash plugin, with what changed in each version and the project's semver and capability policy."
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+All releases are published to [npm](https://www.npmjs.com/package/emdash-header-footer-code) from
+GitHub Actions. Source history is on
+[GitHub](https://github.com/jithinsk/emdash-header-footer-code/commits/main).
+
+## 0.1.1 (2026-10-05)
+
+- **Release:** published through npm trusted publishing (OIDC), with no long-lived npm token. Every
+  release now carries an npm provenance attestation that links the tarball to the exact commit and
+  workflow that built it.
+- No runtime or admin changes from 0.1.0.
+
+## 0.1.0 (2026-10-05)
+
+First public release.
+
+- `page:fragments` hook that outputs snippets in the head, body start or body end of public pages.
+- Targeting by include/exclude path patterns, page kind and locale, with exclude winning over include.
+  Path patterns match decoded paths, so non-ASCII patterns such as `/blog/café/*` work as typed.
+- Ordering by priority, then creation time, then id.
+- Admin page in the EmDash admin: snippet list with search and placement filter, code editor with line
+  numbers, Code/Targeting tabs with a sticky Settings card, duplicate, delete, and per-row on/off.
+- Kill switch that turns off all output without touching snippets.
+- Change log of every create, update, enable, disable, duplicate, delete and kill-switch change.
+- Role-aware API: Admins (`plugins:manage`) write; Editors (`plugins:read`) get a list without code.
+- Limits: 64 KB per snippet, 512 KB total, 100 snippets.
+- Per-isolate cache with a revision check at most once a second. The revision is bumped before the
+  change-log write, so a log failure can't leave stale output.
+- Synchronous transform pipeline for extension packages.
+
+## Versioning policy
+
+The package follows [semver](https://semver.org/).
+
+<Aside title="Capabilities only change in a major version">
+	Native EmDash plugins have no consent prompt on upgrade, so a minor or patch release never adds a
+	capability. Today the plugin requests only `hooks.page-fragments:register`.
+</Aside>
+
+- **Patch:** bug fixes and docs; no behaviour change you have to act on.
+- **Minor:** new features that are backwards compatible, such as new snippet fields with defaults or
+  new admin features.
+- **Major:** anything breaking, including any new capability, a removed option, or a change to how
+  existing snippets match or render.
+
+Stored snippets carry a `schemaVersion`, so a newer schema never gets rewritten by older code. See
+[Data model](/reference/data-model/#schemaversion).
