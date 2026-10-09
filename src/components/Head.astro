@@ -8,11 +8,9 @@ const url = new URL(Astro.url.pathname, Astro.site).href;
 const author = { "@type": "Person", name: "Jithin Sebastian", url: "https://www.jithins.dev/", sameAs: ["https://github.com/jithinsk"] };
 const website = { "@type": "WebSite", "@id": `${site}/#website`, name: "EmDash Header & Footer Code", url: `${site}/` };
 
-const SECTIONS: Record<string, string> = { guides: "Guides", "how-to": "How-to guides", reference: "Reference" };
-const [section] = id.split("/");
+// Sections have no landing pages, so breadcrumbs are Home → Page (every crumb needs a URL).
 const crumbs = [
 	{ name: "Home", item: `${site}/` },
-	...(id.includes("/") && SECTIONS[section] ? [{ name: SECTIONS[section] }] : []),
 	{ name: entry.data.title, item: url },
 ];
 
