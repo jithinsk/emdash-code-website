@@ -1,0 +1,66 @@
+---
+title: Add custom CSS or JavaScript to EmDash
+description: "Add site-wide or page-specific custom CSS and JavaScript to an EmDash site without editing the theme, and control load order and scope."
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+Small style tweaks and scripts don't need a theme change and a redeploy. Add them as snippets, and
+switch them off again just as easily.
+
+## Custom CSS
+
+Add a `<style>` block with **Placement** _Head_:
+
+```html
+<style>
+  .announcement-bar { display: none; }
+  .post-content a { text-decoration-thickness: 2px; }
+</style>
+```
+
+- **Give it a high priority, such as `100`.** It then comes after other head snippets, so your rules
+  win when selectors are equally specific.
+- **Limit it to some pages** with [include paths](/guides/targeting/), for example `/landing/*` for
+  campaign pages.
+- **Seasonal changes:** save a snippet like "Holiday banner styles", then turn it on and off from the
+  list when you need it.
+
+To load a stylesheet file instead:
+
+```html
+<link rel="stylesheet" href="https://cdn.example.com/brand.css" />
+```
+
+## Custom JavaScript
+
+For scripts that work with the page, use **Placement** _Body end_ so the HTML is already there when
+they run:
+
+```html
+<script>
+  document.querySelectorAll('a[href^="http"]').forEach((a) => {
+    if (a.host !== location.host) a.target = '_blank';
+  });
+</script>
+```
+
+If a script must run before the page renders, for example to set a theme class, put it in the
+**Head** with a low priority.
+
+<Aside type="caution">
+	Snippets are output exactly as written and run on every page they match. Test on one page first by
+	adding an include path, then widen the targeting. If something breaks, the
+	[kill switch](/guides/kill-switch/) turns off all snippets at once.
+</Aside>
+
+## Keep it small
+
+Each snippet can hold up to 64 KB, and all snippets together up to 512 KB (see
+[Limits](/reference/limits/)). Inline code is sent with every page, so for anything sizeable, host the
+file and load it with `<script src>` or `<link rel="stylesheet">`.
+
+## When a theme change is better
+
+Snippets suit small, optional tweaks you might want to switch off. Make a theme change instead for
+layout changes, components, and anything that should be version-controlled with your site's code.

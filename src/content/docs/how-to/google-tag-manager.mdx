@@ -1,0 +1,78 @@
+---
+title: Add Google Tag Manager to EmDash
+description: "Install Google Tag Manager on an EmDash site with two snippets, the head loader and the body noscript fallback, then test the container in Preview mode."
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+Google Tag Manager (GTM) needs two pieces of code: a loader script in the `<head>` and a `<noscript>`
+fallback right after `<body>` opens. With Header & Footer Code you add each as its own snippet, and
+the plugin puts them in the right places.
+
+**You need:** the [plugin installed](/installation/), an EmDash Admin account, and a GTM web
+container. Its ID looks like `GTM-XXXXXXX`.
+
+## 1. Add the loader to the head
+
+<Steps>
+
+1. In **Header & Footer Code**, choose **New snippet**.
+2. Paste the loader, replacing `GTM-XXXXXXX` with your container ID:
+
+   ```html
+   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+   })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+   ```
+
+3. Settings: **Name** _GTM loader_, **Placement** _Head_, **Priority** _5_.
+4. Save.
+
+</Steps>
+
+Google asks for the loader "as high in the `<head>` as possible". A low priority puts it ahead of
+your other head snippets.
+
+## 2. Add the noscript fallback to the body
+
+<Steps>
+
+1. Choose **New snippet** again.
+2. Paste the fallback with the same container ID:
+
+   ```html
+   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+   ```
+
+3. Settings: **Name** _GTM noscript_, **Placement** _Body start_, **Priority** _5_.
+4. Save.
+
+</Steps>
+
+Body start is rendered by `<EmDashBodyStart />`, which belongs immediately after `<body>`. See
+[Theme setup](/theme-setup/).
+
+## 3. Test the container
+
+- In GTM, click **Preview**, enter your site's URL, and check that Tag Assistant shows
+  **Connected** and your tags fire.
+- View the page source and search for your `GTM-` ID. It should appear twice: once in the head, once
+  just after `<body>`.
+- Remember to **Submit** (publish) the container in GTM. Preview only affects your own browser.
+
+<Aside type="tip">
+	Add tools like GA4, Google Ads or Meta Pixel **inside GTM** rather than as more snippets. That way
+	there's one place to manage them, and nothing gets loaded twice.
+</Aside>
+
+## Common problems
+
+| Symptom                              | Fix                                                                                 |
+| ------------------------------------ | ----------------------------------------------------------------------------------- |
+| Tag Assistant can't connect          | The loader snippet is off, the ID is wrong, or an edge cache serves old HTML.      |
+| Noscript iframe missing              | Your layout doesn't render `<EmDashBodyStart />`.                                   |
+| Data doubled in GA4                  | GA4 is also added directly as a snippet. Remove one.                                |
+| Consent tools fire after GTM         | Give the consent snippet a lower priority than 5. See [cookie consent](/how-to/cookie-consent/). |

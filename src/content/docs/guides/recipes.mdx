@@ -5,13 +5,15 @@ description: "Copy-ready EmDash snippets for Google Analytics 4, Google Tag Mana
 
 import { Aside } from "@astrojs/starlight/components";
 
-Each recipe lists the placement and any targeting. Replace the placeholder IDs with your own.
+Each recipe lists the placement and any targeting. Replace the placeholder IDs with your own. For step-by-step walkthroughs with checks and fixes, see the how-to guides linked under each recipe.
 
 <Aside type="caution">
 	Only paste code from providers you trust. Snippets run as first-party code on every page they match.
 </Aside>
 
 ## Google Analytics 4
+
+Full guide: [Google Analytics 4](/how-to/google-analytics/)
 
 **Placement:** Head · **Priority:** 10
 
@@ -26,6 +28,8 @@ Each recipe lists the placement and any targeting. Replace the placeholder IDs w
 ```
 
 ## Google Tag Manager
+
+Full guide: [Google Tag Manager](/how-to/google-tag-manager/)
 
 GTM needs two snippets.
 
@@ -48,6 +52,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 ## Search engine verification
 
+Full guide: [Search engine verification](/how-to/search-console-verification/)
+
 **Placement:** Head · **Include paths:** `/`
 
 Verification only needs the home page, so include just `/`.
@@ -67,6 +73,8 @@ Verification only needs the home page, so include just `/`.
 
 ## Chat widget on support pages only
 
+Full guide: [Chat widget on support pages only](/how-to/chat-widget/)
+
 **Placement:** Body end · **Include paths:** `/support`, `/support/*`, `/pricing`
 
 ```html
@@ -74,6 +82,8 @@ Verification only needs the home page, so include just `/`.
 ```
 
 ## Site-wide CSS tweak
+
+Full guide: [Site-wide CSS tweak](/how-to/custom-css-js/)
 
 **Placement:** Head · **Priority:** 100 (so it comes after other head snippets)
 

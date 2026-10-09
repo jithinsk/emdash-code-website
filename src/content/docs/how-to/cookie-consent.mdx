@@ -1,0 +1,93 @@
+---
+title: Add a cookie consent banner to EmDash
+description: "Load a cookie consent banner and Google consent mode defaults before analytics on an EmDash site, using snippet priority to control the load order."
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+A consent management platform (CMP) shows a cookie banner and records each visitor's choice. To work
+properly it has to load **before** your analytics and marketing tags. With Header & Footer Code you
+control that order with [priority](/guides/snippets/#ordering): lower runs first.
+
+<Aside type="caution">
+	This page covers the mechanics of loading a CMP in EmDash. It isn't legal advice. Check what your
+	CMP and your regulators require.
+</Aside>
+
+## The load order
+
+| Priority | Snippet                          | Placement |
+| -------- | -------------------------------- | --------- |
+| 1        | Google consent mode defaults     | Head      |
+| 2        | Your CMP's script                | Head      |
+| 5        | Google Tag Manager loader        | Head      |
+| 10       | Google Analytics 4, other tags   | Head      |
+
+All four go in the head, so the order within the head is what matters.
+
+## 1. Set consent mode defaults (Google tags only)
+
+If you use Google Analytics, Google Ads or GTM, Google's
+[consent mode](https://developers.google.com/tag-platform/security/guides/consent) needs default
+states **before** any Google tag loads. Add this as a snippet with **Placement** _Head_ and
+**Priority** _1_:
+
+```html
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+    wait_for_update: 500
+  });
+</script>
+```
+
+Many CMPs can set these defaults for you. If yours does, skip this snippet so the defaults aren't set
+twice.
+
+## 2. Add your CMP's script
+
+<Steps>
+
+1. Copy the installation script from your CMP's dashboard. For example, CookieYes gives you a tag
+   like this:
+
+   ```html
+   <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/YOUR_SITE_ID/script.js"></script>
+   ```
+
+2. In **Header & Footer Code**, add it as a new snippet with **Placement** _Head_ and **Priority**
+   _2_.
+3. Leave targeting empty so the banner shows on every page.
+4. Save, then open your site in a private window to see the banner.
+
+</Steps>
+
+## 3. Keep your other tags after it
+
+Give analytics and marketing snippets a priority higher than your CMP's, such as `5` for the
+[GTM loader](/how-to/google-tag-manager/) and `10` for
+[Google Analytics](/how-to/google-analytics/).
+
+## Blocking scripts until consent
+
+CMPs block non-essential scripts in one of two ways:
+
+- **Automatic blocking:** the CMP scans the page and holds back known trackers. Nothing else to do.
+- **Manual tagging:** you mark each script with its category, usually by changing `type` to
+  `text/plain` and adding a category attribute your CMP documents. Edit the snippet code to match.
+
+If you have many snippets to tag, a [transform](/guides/transforms/) can add the attribute for you
+based on a category stored in the snippet's `meta`. The transforms page has a worked
+`data-category` example.
+
+## Check it works
+
+- In a private window, the banner appears before any analytics request is sent. Check the
+  **Network** tab in DevTools.
+- With GTM, Tag Assistant's **Consent** tab shows the default and updated consent states.
+- View the page source: the consent defaults come first, then the CMP, then your tags.

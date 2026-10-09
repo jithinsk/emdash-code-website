@@ -1,0 +1,73 @@
+---
+title: Verify an EmDash site in Google Search Console
+description: "Verify ownership of an EmDash site in Google Search Console and Bing Webmaster Tools using the HTML meta tag method, with no theme edits or file uploads."
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+Search engines ask you to prove you own a site before showing you its search data. The **HTML tag**
+method works well with EmDash: you add one `<meta>` tag to your home page with Header & Footer Code.
+
+## Google Search Console
+
+<Steps>
+
+1. In [Google Search Console](https://search.google.com/search-console), add a **URL prefix**
+   property for your site, for example `https://example.com/`.
+2. Choose the **HTML tag** verification method and copy the tag. It looks like this:
+
+   ```html
+   <meta name="google-site-verification" content="your-token" />
+   ```
+
+3. In EmDash, open **Header & Footer Code → New snippet** and paste the tag.
+4. Use these settings:
+
+   | Setting       | Value                    |
+   | ------------- | ------------------------ |
+   | Name          | Search Console verification |
+   | Placement     | Head                     |
+   | Include paths | `/`                      |
+
+   Google only checks the home page, so including just `/` keeps the tag off every other page.
+5. Save. If you use an edge HTML cache, purge it.
+6. Back in Search Console, click **Verify**.
+
+</Steps>
+
+<Aside type="caution">
+	Keep the snippet in place after verifying. Google re-checks from time to time, and if the tag is
+	gone, you can lose access to the property.
+</Aside>
+
+<Aside>
+	A **Domain** property (covering every subdomain and protocol) needs a DNS TXT record instead. You
+	add that at your DNS provider, not in EmDash.
+</Aside>
+
+## Bing Webmaster Tools
+
+Bing also accepts a meta tag. In [Bing Webmaster Tools](https://www.bing.com/webmasters), add your
+site, choose **HTML Meta Tag**, and copy the tag:
+
+```html
+<meta name="msvalidate.01" content="your-token" />
+```
+
+Paste it into the **same snippet** as the Google tag, one tag per line, and save. Then click
+**Verify** in Bing.
+
+You can also import a verified site from Google Search Console into Bing, which skips this step.
+
+## Submit your sitemap
+
+Once you're verified, submit your sitemap (often `/sitemap-index.xml` or `/sitemap.xml` on an Astro
+site) in both tools so they find your pages faster.
+
+## Common problems
+
+| Symptom                          | Fix                                                                             |
+| -------------------------------- | ------------------------------------------------------------------------------- |
+| "Verification tag not found"     | View the home page source and search for the token. If it's missing, check the snippet is On, its include path is `/`, and the layout renders `<EmDashHead />`. Purge any edge cache. |
+| Tag found but in the `<body>`    | Placement must be **Head**.                                                     |
+| Verified, then lost later        | The snippet was deleted or disabled. Check the [change log](/guides/kill-switch/#change-log). |

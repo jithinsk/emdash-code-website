@@ -88,6 +88,17 @@ export default defineConfig({
 					],
 				},
 				{
+					label: "How-to guides",
+					items: [
+						{ label: "Google Analytics 4", slug: "how-to/google-analytics" },
+						{ label: "Google Tag Manager", slug: "how-to/google-tag-manager" },
+						{ label: "Search Console verification", slug: "how-to/search-console-verification" },
+						{ label: "Cookie consent banner", slug: "how-to/cookie-consent" },
+						{ label: "Live chat widget", slug: "how-to/chat-widget" },
+						{ label: "Custom CSS & JavaScript", slug: "how-to/custom-css-js" },
+					],
+				},
+				{
 					label: "Reference",
 					items: [
 						{ label: "Snippet fields", slug: "reference/fields" },

@@ -1,0 +1,56 @@
+---
+title: Add a live chat widget to EmDash
+description: "Add a live chat or support widget to an EmDash site, show it only on the pages that need it, and keep it out of checkout and other focused pages."
+---
+
+import { Steps } from "@astrojs/starlight/components";
+
+Live chat and support widgets (Intercom, Crisp, Tawk.to, HubSpot chat and others) are a script you
+paste into your pages. With Header & Footer Code you add it once and choose exactly where it appears.
+
+## Add the widget
+
+<Steps>
+
+1. Copy the install snippet from your chat provider. It's usually a `<script>` tag with your
+   workspace or site ID.
+2. In **Header & Footer Code**, choose **New snippet** and paste it.
+3. Use these settings:
+
+   | Setting   | Value       | Why                                                                 |
+   | --------- | ----------- | ------------------------------------------------------------------- |
+   | Placement | Body end    | Widgets aren't needed for the first paint; loading last keeps pages fast. |
+   | Priority  | 10          | Default. Raise it if other body-end scripts must run first.         |
+
+4. Save and reload your site. The chat bubble should appear.
+
+</Steps>
+
+If your provider's instructions say to put the code in the `<head>`, use **Head** instead.
+
+## Show it only where it helps
+
+Use [targeting](/guides/targeting/) to limit the widget:
+
+| Goal                                       | Include paths                              | Exclude paths                |
+| ------------------------------------------ | ------------------------------------------ | ---------------------------- |
+| Support and pricing pages only             | `/support`, `/support/*`, `/pricing`       |                              |
+| Everywhere except checkout                 |                                            | `/checkout`, `/checkout/*`   |
+| Only on blog posts                         | `/blog/*` and **Page kind** _Content pages_ |                             |
+| English pages only                         | **Locales** `en`                           |                              |
+
+Exclude always wins over include.
+
+## Test before you go live
+
+Start with **Include paths** set to one page you can check, such as `/support`. Once the widget looks
+right there, change the targeting to where you really want it. To pull it quickly, switch the snippet
+**Off** from the list.
+
+## Common problems
+
+| Symptom                                | Fix                                                                            |
+| -------------------------------------- | ------------------------------------------------------------------------------ |
+| Bubble doesn't appear                  | Check the snippet is On, the layout renders `<EmDashBodyEnd />`, and the targeting matches the page. |
+| Two bubbles                            | The widget is also in your theme or loaded through GTM. Keep one.              |
+| Slows the page down                    | Keep it at Body end and limit it to the pages that need it.                    |

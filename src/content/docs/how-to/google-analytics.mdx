@@ -1,0 +1,80 @@
+---
+title: Add Google Analytics 4 to EmDash
+description: "Step-by-step: add the Google Analytics 4 (GA4) tag to every page of an EmDash site with the Header & Footer Code plugin, then confirm it's collecting data."
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+This guide adds the Google Analytics 4 tag (`gtag.js`) to every public page of your EmDash site. You
+don't edit your theme or redeploy.
+
+**You need:** the [Header & Footer Code plugin installed](/installation/), an EmDash Admin account,
+and a GA4 property.
+
+<Aside>
+	Using Google Tag Manager? Add GA4 inside GTM instead and follow
+	[Add Google Tag Manager to EmDash](/how-to/google-tag-manager/). If you install both, page views are
+	counted twice.
+</Aside>
+
+## 1. Get your measurement ID
+
+In Google Analytics, open **Admin → Data streams**, choose your web stream (or create one for your
+site's URL), and copy the **Measurement ID**. It looks like `G-XXXXXXXXXX`.
+
+## 2. Add the snippet in EmDash
+
+<Steps>
+
+1. In the EmDash admin, open **Header & Footer Code** and choose **New snippet**.
+2. Paste the tag into **Code**, replacing both `G-XXXXXXXXXX` with your measurement ID:
+
+   ```html
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+   <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'G-XXXXXXXXXX');
+   </script>
+   ```
+
+3. Under **Settings**, use these values:
+
+   | Setting   | Value              |
+   | --------- | ------------------ |
+   | Name      | Google Analytics 4 |
+   | Placement | Head               |
+   | Priority  | 10                 |
+   | Enabled   | On                 |
+
+4. Leave **Targeting** empty so the tag runs on every page.
+5. Save. The tag is live within about a second.
+
+</Steps>
+
+## 3. Check that it works
+
+- **View the page source** of your home page (not the DOM inspector) and search for your
+  `G-` ID. If it's not there, see [Troubleshooting](/guides/troubleshooting/).
+- In Google Analytics, open **Reports → Realtime** and visit your site in another tab. Your visit
+  should show up within a minute.
+- If your pages are served from an edge HTML cache, purge it first. See
+  [Caching](/guides/caching/).
+
+## Options
+
+- **Keep staff out of your data:** the plugin never outputs snippets on `/_emdash/` admin pages, so
+  admin browsing isn't tracked. To leave out other pages, add them to **Exclude paths**.
+- **Track only some sections:** add include paths such as `/blog` and `/blog/*`. See
+  [Targeting pages](/guides/targeting/).
+- **Consent:** in regions that need consent before analytics cookies are set, load a consent banner
+  and Google consent mode defaults first. See [Add a cookie consent banner](/how-to/cookie-consent/).
+
+## Common problems
+
+| Symptom                               | Fix                                                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------------------- |
+| No data in Realtime                   | Check the ID in both places, the snippet is **On**, and the layout renders `<EmDashHead />`. |
+| Page views counted twice              | GA4 is also installed through GTM or the theme. Keep one.                              |
+| Works on some pages only              | Clear **Include paths**, or check **Page kind** is _All pages_.                       |
